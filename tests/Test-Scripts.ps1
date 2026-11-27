@@ -135,10 +135,15 @@ public static class QRWindowTestNative {
     public static extern bool PostMessage(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
 }
 '@
-$qrHost = Start-Process -FilePath (Get-Command pwsh).Source -ArgumentList '-NoProfile', '-STA', '-File', "`"$PSScriptRoot/QR-WindowHost.ps1`"" -PassThru
-Start-Sleep -Seconds 8
-$qrWindow = [QRWindowTestNative]::FindWindow($null, 'QR: QR window CI test')
-Assert ($qrWindow -ne [IntPtr]::Zero) 'QR preview window did not open'
+$qrStdout = Join-Path $directory 'qr-host.log'
+$qrStderr = Join-Path $directory 'qr-host-error.log'
+$qrHost = Start-Process -FilePath (Get-Command pwsh).Source -ArgumentList '-NoProfile', '-STA', '-File', "`"$PSScriptRoot/QR-WindowHost.ps1`"" -PassThru -RedirectStandardOutput $qrStdout -RedirectStandardError $qrStderr
+for ($attempt = 0; $attempt -lt 45; $attempt++) {
+    $qrWindow = [QRWindowTestNative]::FindWindow($null, 'QR: QR window CI test')
+    if ($qrWindow -ne [IntPtr]::Zero -or $qrHost.HasExited) { break }
+    Start-Sleep -Seconds 1
+}
+Assert ($qrWindow -ne [IntPtr]::Zero) "QR preview window did not open. Host exit: $($qrHost.HasExited). Errors: $(Get-Content $qrStderr -Raw)"
 [void][QRWindowTestNative]::PostMessage($qrWindow, 0x0010, [IntPtr]::Zero, [IntPtr]::Zero)
 Assert ($qrHost.WaitForExit(20000)) 'QR preview window did not close'
 Assert ($qrHost.ExitCode -eq 0) 'QR preview process failed'
