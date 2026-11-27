@@ -49,7 +49,7 @@ Get-QR 'Scan me' -Window
 Get-QR 'Both displays at once' -Terminal -Window -Width 400
 ```
 
-`Get-QR` always saves an opaque PNG and returns its file object. `-Terminal` prints a scannable QR with ANSI half-block glyphs; `-Window` opens a resizable-by-closing modal Windows Forms preview (close it to return to the console). Both switches can be combined. The embedded PowerShell encoder is based on [Gregoire L. Duval's MIT-licensed implementation](https://github.com/GregoireLD/Powershell-QrCodeGenerator) with its license retained in the script.
+`Get-QR` always saves an opaque PNG and returns its file object. `-Terminal` prints a scannable QR with ANSI half-block glyphs; `-Window` opens a modal Windows Forms preview (close it to return to the console). Both switches can be combined. The embedded PowerShell encoder is based on [Gregoire L. Duval's MIT-licensed implementation](https://github.com/GregoireLD/Powershell-QrCodeGenerator) with its license retained in the script.
 
 Install Microsoft's WinApp CLI once for screenshots:
 
