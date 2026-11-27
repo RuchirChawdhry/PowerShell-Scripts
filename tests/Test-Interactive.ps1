@@ -4,11 +4,11 @@ $root = Split-Path $PSScriptRoot -Parent
 . "$root/Get-Screenshot.ps1"
 . "$root/Get-ScreenshotJumplist.ps1"
 
-$notepad = Start-Process notepad.exe -PassThru
+Start-Process notepad.exe
 Start-Sleep -Seconds 2
 
-Get-HWND -ProcessId $notepad.Id
-Get-Screenshot -ProcessId $notepad.Id -Path (Join-Path $PSScriptRoot 'notepad.png')
-Get-ScreenshotJumplist -ProcessId $notepad.Id -Path (Join-Path $PSScriptRoot 'notepad-jumplist.png')
+Get-HWND -Name notepad
+Get-Screenshot -Name notepad -Path (Join-Path $PSScriptRoot 'notepad.png')
+Get-ScreenshotJumplist -Name notepad -Path (Join-Path $PSScriptRoot 'notepad-jumplist.png')
 
 Write-Host 'Open both PNGs and verify their contents, then close Notepad.'

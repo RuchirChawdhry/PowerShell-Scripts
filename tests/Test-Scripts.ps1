@@ -101,5 +101,7 @@ Remove-Item $directory -Recurse -Force
 Assert ((Get-Command Get-Screenshot).ParameterSets.Name -contains 'Hwnd') 'Screenshot HWND parameter set missing'
 Assert ((Get-Command Get-Screenshot).ParameterSets.Name -contains 'ProcessId') 'Screenshot PID parameter set missing'
 Assert ((Get-Command Get-ScreenshotJumplist).ParameterSets.Name -contains 'Name') 'Jump-list name parameter set missing'
+Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes, System.Windows.Forms
+Assert ($null -ne [Windows.Automation.AutomationElement]::RootElement) 'Windows UI Automation unavailable'
 
 Write-Host 'All CI tests passed.'
