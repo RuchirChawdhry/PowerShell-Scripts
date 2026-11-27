@@ -1,6 +1,6 @@
 # PowerShell Scripts
 
-Small, direct utilities for **Windows 11 + PowerShell 7+**. Each public script can be dot-sourced independently. QR generation uses the offline `QRCodeGenerator` module; screenshots use Microsoft's WinApp CLI.
+Small, direct utilities for **Windows 11 + PowerShell 7+**. Every `.ps1` script is self-contained and can be dot-sourced independently. QR generation uses only built-in PowerShell and .NET; screenshots use Microsoft's WinApp CLI.
 
 ## Scripts
 
@@ -8,7 +8,7 @@ Small, direct utilities for **Windows 11 + PowerShell 7+**. Each public script c
 | --- | --- | --- |
 | `Get-BluetoothBattery` | Battery percentages exposed by connected Bluetooth device nodes | `Get-BluetoothBattery -Name Sony` |
 | `Get-BatteryInfo` | Laptop battery capacities, health, charge and power state | `Get-BatteryInfo` |
-| `Get-QR` | Text to an offline PNG QR code | `Get-QR 'Hello' -Path .\hello.png` |
+| `Get-QR` | Text to a PNG, a terminal QR or a QR window | `Get-QR 'Hello' -Terminal -Window` |
 | `Get-HWND` | Find main-window handles by fuzzy app name, title or PID | `Get-HWND -Name npad` |
 | `Get-ProcesID` | Find process IDs by fuzzy app/process name or window title | `Get-ProcesID -Name chrome` |
 | `Get-HWInfo` | Hardware inventory grouped by system, CPU, GPU, RAM, disks, motherboard, BIOS, network and monitors | `(Get-HWInfo -Category CPU, RAM).CPU` |
@@ -38,12 +38,16 @@ Get-Screenshot -ProcessId 1234 -Path .\app.png
 Get-Screenshot -Hwnd (Get-HWND -Name 'notepad' | Select-Object -First 1)
 ```
 
-Install the one QR dependency once (the module generates codes locally without uploading text):
+Generate QR codes locally with no module or package installation:
 
 ```powershell
-Install-Module QRCodeGenerator -RequiredVersion 2.4.0 -Scope CurrentUser -Force
 Get-QR -Text 'https://github.com/RuchirChawdhry/PowerShell-Scripts' -Path .\repo.png
+Get-QR 'Hello from PowerShell' -Terminal
+Get-QR 'Scan me' -Window
+Get-QR 'Both displays at once' -Terminal -Window -Width 400
 ```
+
+`Get-QR` always saves an opaque PNG and returns its file object. `-Terminal` prints a scannable QR with ANSI half-block glyphs; `-Window` opens a resizable-by-closing modal Windows Forms preview (close it to return to the console). Both switches can be combined. The embedded PowerShell encoder is based on [Gregoire L. Duval's MIT-licensed implementation](https://github.com/GregoireLD/Powershell-QrCodeGenerator) with its license retained in the script.
 
 Install Microsoft's WinApp CLI once for screenshots:
 
@@ -59,7 +63,7 @@ Screenshots use `winapp ui screenshot --capture-screen`, capturing the visible w
 
 ## Tests
 
-GitHub Actions runs parsing, fuzzy lookup, Bluetooth-property parsing, battery calculations, hardware-inventory checks, offline QR generation, and real window and jump-list captures on `windows-latest` with WinApp. PNG edge-alpha tests check for transparent borders. Hardware-specific battery readings use deterministic samples because hosted runners have no Bluetooth accessories or laptop battery.
+GitHub Actions runs parsing, fuzzy lookup, Bluetooth-property parsing, battery calculations, hardware-inventory checks, dependency-free QR generation and its terminal/window modes, and real window and jump-list captures on `windows-latest` with WinApp. A separate test decoder checks QR content, and PNG edge-alpha tests check for transparent borders. Hardware-specific battery readings use deterministic samples because hosted runners have no Bluetooth accessories or laptop battery.
 
 For an additional local interactive check:
 

@@ -107,18 +107,42 @@ Assert ($hardware.RAM.CapacityGB -eq 16) 'RAM capacity conversion failed'
 Assert ($hardware.Disk.SizeGB -gt 470) 'Disk capacity conversion failed'
 Assert ($hardware.Monitor.Name -eq 'Demo Panel') 'Monitor name decoding failed'
 Remove-Item Function:Get-CimInstance
-Assert ((Get-HWInfo -Category CPU).CPU.Name) 'Real processor inventory failed'
+Assert ([bool]((Get-HWInfo -Category CPU).CPU.Name)) 'Real processor inventory failed'
 
 $directory = Join-Path ([System.IO.Path]::GetTempPath()) ("powershell-scripts-" + [guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $directory)
-$path = Join-Path $directory 'qr.png'
+$path = Join-Path $PSScriptRoot 'qr-ci.png'
 $qr = Get-QR -Text 'AarPaar QR test' -Path $path -Width 256
 $bytes = [System.IO.File]::ReadAllBytes($qr.FullName)
 Assert ((($bytes[0..7] -join ',') -eq '137,80,78,71,13,10,26,10')) 'QR output is not PNG'
 Add-Type -AssemblyName System.Drawing
-$image = [System.Drawing.Image]::FromFile($qr.FullName)
-Assert ($image.Width -ge 10 -and $image.Height -ge 10) 'QR image is empty'
+$image = [System.Drawing.Bitmap]::new($qr.FullName)
+Assert ($image.Width -eq 256 -and $image.Height -eq 256) 'QR image has wrong dimensions'
+Assert ($image.GetPixel(0, 0).A -eq 255 -and $image.GetPixel(0, 0).R -eq 255) 'QR background must be opaque white'
 $image.Dispose()
+
+$output = @(Get-QR -Text 'Terminal QR test' -Path (Join-Path $directory 'terminal.png') -Width 256 -Terminal 6>&1)
+Assert (($output | Where-Object { $_ -is [System.Management.Automation.InformationRecord] }).MessageData -match [char]0x2584) 'Terminal QR output missing'
+Assert ($output[-1].Name -eq 'terminal.png') 'Terminal QR did not return PNG'
+
+Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class QRWindowTestNative {
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    public static extern IntPtr FindWindow(string className, string title);
+    [DllImport("user32.dll")]
+    public static extern bool PostMessage(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
+}
+'@
+$qrHost = Start-Process -FilePath (Get-Command pwsh).Source -ArgumentList '-NoProfile', '-STA', '-File', "`"$PSScriptRoot/QR-WindowHost.ps1`"" -PassThru
+Start-Sleep -Seconds 8
+$qrWindow = [QRWindowTestNative]::FindWindow($null, 'QR: QR window CI test')
+Assert ($qrWindow -ne [IntPtr]::Zero) 'QR preview window did not open'
+[void][QRWindowTestNative]::PostMessage($qrWindow, 0x0010, [IntPtr]::Zero, [IntPtr]::Zero)
+Assert ($qrHost.WaitForExit(20000)) 'QR preview window did not close'
+Assert ($qrHost.ExitCode -eq 0) 'QR preview process failed'
+Assert (Test-Path (Join-Path $PSScriptRoot 'qr-window.png')) 'QR preview PNG is missing'
 
 Add-Type -AssemblyName System.Windows.Forms
 $form = [System.Windows.Forms.Form]::new()

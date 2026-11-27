@@ -7,7 +7,7 @@ Start-Sleep -Seconds 3
 $path = Join-Path $PSScriptRoot 'winapp-notepad-jumplist.png'
 $screenshot = Get-ScreenshotJumplist -Name notepad -Path $path
 
-$window = [PowerShellScriptsNative]::GetForegroundWindow()
+$window = [JumpListNative]::GetForegroundWindow()
 $menu = winapp ui inspect -w $window --depth 5 --json | ConvertFrom-Json
 if ($menu.windows[0].title -notlike 'Jump List for *') {
     throw "Expected a taskbar Jump List; got '$($menu.windows[0].title)'"
