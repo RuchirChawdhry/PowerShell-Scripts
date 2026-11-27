@@ -114,6 +114,13 @@ Assert ($pixel.G -gt $pixel.R -and $pixel.G -gt $pixel.B) 'Window screenshot did
 $capture.Dispose()
 $form.Close()
 $form.Dispose()
+
+Start-Process notepad.exe
+Start-Sleep -Seconds 2
+$jump = Get-ScreenshotJumplist -Name notepad -Path (Join-Path $directory 'jumplist.png')
+$jumpImage = [System.Drawing.Image]::FromFile($jump.FullName)
+Assert ($jumpImage.Width -ge 100 -and $jumpImage.Height -ge 50) 'Jump-list screenshot is empty'
+$jumpImage.Dispose()
 Remove-Item $directory -Recurse -Force
 
 Assert ((Get-Command Get-Screenshot).ParameterSets.Name -contains 'Hwnd') 'Screenshot HWND parameter set missing'
