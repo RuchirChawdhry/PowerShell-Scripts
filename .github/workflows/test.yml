@@ -34,6 +34,10 @@ jobs:
       - name: Verify Wiki, Pages and sitemap
         shell: pwsh
         run: ./tests/Test-Docs.ps1
+      - name: Exercise QR preview window
+        shell: pwsh
+        timeout-minutes: 3
+        run: ./tests/Test-QRWindow.ps1
       - name: Capture native taskbar Jump List
         shell: pwsh
         run: ./tests/Test-JumpList.ps1

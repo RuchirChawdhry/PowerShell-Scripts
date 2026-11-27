@@ -2551,6 +2551,7 @@ function New-QrSegment
 }
 
 function Get-QR {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory, Position = 0, ValueFromPipeline)]
         [string]$Text,
@@ -2595,6 +2596,7 @@ function Get-QR {
         }
 
         if ($Window) {
+            Write-Verbose 'Creating QR preview window'
             Add-Type -AssemblyName System.Windows.Forms
             $form = [System.Windows.Forms.Form]::new()
             $form.Text = "QR: $Text"
@@ -2608,7 +2610,9 @@ function Get-QR {
             $picture.Image = [System.Drawing.Bitmap]::new($Path)
             $form.Controls.Add($picture)
 
+            Write-Verbose "Displaying QR preview window: $($form.Text)"
             [void]$form.ShowDialog()
+            Write-Verbose 'QR preview window closed'
             $picture.Image.Dispose()
             $form.Dispose()
         }

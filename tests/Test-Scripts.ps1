@@ -125,37 +125,6 @@ $output = @(Get-QR -Text 'Terminal QR test' -Path (Join-Path $directory 'termina
 Assert (($output | Where-Object { $_ -is [System.Management.Automation.InformationRecord] }).MessageData -match [char]0x2584) 'Terminal QR output missing'
 Assert ($output[-1].Name -eq 'terminal.png') 'Terminal QR did not return PNG'
 
-Add-Type -TypeDefinition @'
-using System;
-using System.Runtime.InteropServices;
-public static class QRWindowTestNative {
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    public static extern IntPtr FindWindow(string className, string title);
-    [DllImport("user32.dll")]
-    public static extern bool PostMessage(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
-}
-'@
-$qrRunspace = [runspacefactory]::CreateRunspace()
-$qrRunspace.ApartmentState = [System.Threading.ApartmentState]::STA
-$qrRunspace.Open()
-$qrPowerShell = [powershell]::Create()
-$qrPowerShell.Runspace = $qrRunspace
-[void]$qrPowerShell.AddScript(". '$root/Get-QR.ps1'; Get-QR -Text 'QR window CI test' -Path '$PSScriptRoot/qr-window.png' -Width 256 -Window")
-$qrAsync = $qrPowerShell.BeginInvoke()
-for ($attempt = 0; $attempt -lt 30; $attempt++) {
-    $qrWindow = [QRWindowTestNative]::FindWindow($null, 'QR: QR window CI test')
-    if ($qrWindow -ne [IntPtr]::Zero -or $qrAsync.IsCompleted) { break }
-    Start-Sleep -Seconds 1
-}
-Assert ($qrWindow -ne [IntPtr]::Zero) "QR preview window did not open. Runspace errors: $($qrPowerShell.Streams.Error)"
-[void][QRWindowTestNative]::PostMessage($qrWindow, 0x0010, [IntPtr]::Zero, [IntPtr]::Zero)
-Assert ($qrAsync.AsyncWaitHandle.WaitOne(20000)) 'QR preview window did not close'
-[void]$qrPowerShell.EndInvoke($qrAsync)
-Assert (-not $qrPowerShell.HadErrors) 'QR preview runspace failed'
-$qrPowerShell.Dispose()
-$qrRunspace.Dispose()
-Assert (Test-Path (Join-Path $PSScriptRoot 'qr-window.png')) 'QR preview PNG is missing'
-
 Add-Type -AssemblyName System.Windows.Forms
 $form = [System.Windows.Forms.Form]::new()
 $form.Text = 'Screenshot CI target'
