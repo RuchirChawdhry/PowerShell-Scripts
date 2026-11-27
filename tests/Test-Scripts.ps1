@@ -96,6 +96,24 @@ Assert ((($bytes[0..7] -join ',') -eq '137,80,78,71,13,10,26,10')) 'QR output is
 $image = [System.Drawing.Image]::FromFile($qr.FullName)
 Assert ($image.Width -ge 10 -and $image.Height -ge 10) 'QR image is empty'
 $image.Dispose()
+
+Add-Type -AssemblyName System.Windows.Forms
+$form = [System.Windows.Forms.Form]::new()
+$form.Text = 'Screenshot CI target'
+$form.StartPosition = 'Manual'
+$form.Location = [System.Drawing.Point]::new(100, 100)
+$form.Size = [System.Drawing.Size]::new(320, 240)
+$form.BackColor = [System.Drawing.Color]::LimeGreen
+$form.Show()
+[System.Windows.Forms.Application]::DoEvents()
+
+$screenshot = Get-Screenshot -Hwnd $form.Handle -Path (Join-Path $directory 'window.png')
+$capture = [System.Drawing.Bitmap]::new($screenshot.FullName)
+$pixel = $capture.GetPixel([int]($capture.Width / 2), [int]($capture.Height / 2))
+Assert ($pixel.G -gt $pixel.R -and $pixel.G -gt $pixel.B) 'Window screenshot did not capture its visible contents'
+$capture.Dispose()
+$form.Close()
+$form.Dispose()
 Remove-Item $directory -Recurse -Force
 
 Assert ((Get-Command Get-Screenshot).ParameterSets.Name -contains 'Hwnd') 'Screenshot HWND parameter set missing'
