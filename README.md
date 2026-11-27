@@ -48,7 +48,7 @@ Screenshots use the visible desktop pixels, including overlays, not hidden-windo
 
 ## Tests
 
-GitHub Actions runs the parsing, fuzzy lookup, PnP battery-property parsing, battery calculations and PNG-generation tests on `windows-11-arm` with PowerShell 7. Device queries are tested with deterministic samples because hosted runners do not contain your Bluetooth accessories or laptop battery. Screenshot commands are loaded and their parameter sets checked in CI. Real desktop capture and jump-list opening require a local interactive session:
+GitHub Actions runs parsing, fuzzy lookup, Bluetooth-property parsing, battery calculations, offline QR generation, UI Automation loading, and a real HWND-to-PNG capture smoke test on `windows-11-arm` with PowerShell 7. Device readings use deterministic samples because hosted runners have no Bluetooth accessories or laptop battery. The screenshot smoke test verifies output dimensions; hosted desktops do not reliably show the test window's actual pixels. Correct visual content and taskbar jump-list opening require a local interactive session:
 
 ```powershell
 .\tests\Test-Interactive.ps1

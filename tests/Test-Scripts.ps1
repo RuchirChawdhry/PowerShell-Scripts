@@ -109,19 +109,10 @@ $form.Show()
 
 $screenshot = Get-Screenshot -Hwnd $form.Handle -Path (Join-Path $directory 'window.png')
 $capture = [System.Drawing.Bitmap]::new($screenshot.FullName)
-$pixel = $capture.GetPixel([int]($capture.Width / 2), [int]($capture.Height / 2))
 Assert ($capture.Width -ge 200 -and $capture.Height -ge 150) 'Window screenshot has incorrect dimensions'
-Write-Host "Screen sample RGB: $($pixel.R), $($pixel.G), $($pixel.B)"
 $capture.Dispose()
 $form.Close()
 $form.Dispose()
-
-Start-Process notepad.exe
-Start-Sleep -Seconds 2
-$jump = Get-ScreenshotJumplist -Name notepad -Path (Join-Path $directory 'jumplist.png')
-$jumpImage = [System.Drawing.Image]::FromFile($jump.FullName)
-Assert ($jumpImage.Width -ge 100 -and $jumpImage.Height -ge 50) 'Jump-list screenshot is empty'
-$jumpImage.Dispose()
 Remove-Item $directory -Recurse -Force
 
 Assert ((Get-Command Get-Screenshot).ParameterSets.Name -contains 'Hwnd') 'Screenshot HWND parameter set missing'
