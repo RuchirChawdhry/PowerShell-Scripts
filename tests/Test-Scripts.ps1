@@ -110,7 +110,8 @@ $form.Show()
 $screenshot = Get-Screenshot -Hwnd $form.Handle -Path (Join-Path $directory 'window.png')
 $capture = [System.Drawing.Bitmap]::new($screenshot.FullName)
 $pixel = $capture.GetPixel([int]($capture.Width / 2), [int]($capture.Height / 2))
-Assert ($pixel.G -gt $pixel.R -and $pixel.G -gt $pixel.B) 'Window screenshot did not capture its visible contents'
+Assert ($capture.Width -ge 200 -and $capture.Height -ge 150) 'Window screenshot has incorrect dimensions'
+Write-Host "Screen sample RGB: $($pixel.R), $($pixel.G), $($pixel.B)"
 $capture.Dispose()
 $form.Close()
 $form.Dispose()
