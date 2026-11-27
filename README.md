@@ -2,6 +2,8 @@
 
 Small, direct utilities for **Windows 11 + PowerShell 7+**. Every `.ps1` script is self-contained and can be dot-sourced independently. QR generation uses only built-in PowerShell and .NET; screenshots use Microsoft's WinApp CLI.
 
+**Documentation:** [GitHub Pages](https://ruchirchawdhry.github.io/PowerShell-Scripts/) · [GitHub Wiki](https://github.com/RuchirChawdhry/PowerShell-Scripts/wiki) · [sitemap.xml](https://ruchirchawdhry.github.io/PowerShell-Scripts/sitemap.xml)
+
 ## Scripts
 
 | Script | Purpose | Example |
@@ -64,6 +66,8 @@ Screenshots use `winapp ui screenshot --capture-screen`, capturing the visible w
 ## Tests
 
 GitHub Actions runs parsing, fuzzy lookup, Bluetooth-property parsing, battery calculations, hardware-inventory checks, dependency-free QR generation and its terminal/window modes, and real window and jump-list captures on `windows-latest` with WinApp. A separate test decoder checks QR content, and PNG edge-alpha tests check for transparent borders. Hardware-specific battery readings use deterministic samples because hosted runners have no Bluetooth accessories or laptop battery.
+
+The [GitHub Pages site](docs/index.html) is static HTML/CSS published from `docs/` using the `pages.yml` workflow. Its root sitemap is the single file [`docs/sitemap.xml`](docs/sitemap.xml), not a generated numbered sitemap. The [`wiki/`](wiki/Home.md) Markdown files are published to the repository's existing GitHub Wiki by `wiki.yml` whenever they change on `main`. The documentation tests verify each command has a site page and a Wiki page and that every sitemap URL resolves to a local site file.
 
 For an additional local interactive check:
 

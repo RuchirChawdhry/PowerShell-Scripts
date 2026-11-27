@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Turn UTF-8 text into a PNG, a terminal QR, and a window preview.">
+  <link rel="canonical" href="https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-qr.html">
+  <link rel="sitemap" type="application/xml" href="https://ruchirchawdhry.github.io/PowerShell-Scripts/sitemap.xml">
+  <link rel="stylesheet" href="../styles.css">
+  <title>Get-QR · PowerShell Scripts</title>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="../"><span class="terminal-icon">PS<span class="cursor">_</span></span> PowerShell Scripts</a>
+      <nav aria-label="Main"><a href="../">Overview</a><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts/wiki">Wiki</a><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts">GitHub</a></nav>
+    </header>
+    <main id="content">
+      <div class="crumb"><a href="../">← All scripts</a><span>/ GRAPHICS</span></div>
+      <section class="detail-hero"><span class="eyebrow">GRAPHICS / COMMAND REFERENCE</span><h1>Get-QR</h1><p>Uses a bundled PowerShell QR encoder and Windows' built-in .NET drawing APIs. No QR module, package, API key, or network service.</p><a class="source-link" href="https://github.com/RuchirChawdhry/PowerShell-Scripts/blob/main/Get-QR.ps1">View Get-QR.ps1 on GitHub ↗</a></section>
+      <article class="reference"><h2>Usage</h2><pre><code>Get-QR 'Hello world' -Terminal -Window -Path .\hello.png -Width 400</code></pre><h2>Parameters</h2><dl class="parameters"><div><dt><code>-Text</code></dt><dd>Required text or pipeline input.</dd></div><div><dt><code>-Path</code></dt><dd>PNG output path; defaults to qr.png in the working directory.</dd></div><div><dt><code>-Width</code></dt><dd>Square image size in pixels; defaults to 400.</dd></div><div><dt><code>-Terminal</code></dt><dd>Print ANSI-colored half-block QR glyphs in the console.</dd></div><div><dt><code>-Window</code></dt><dd>Open a Windows Forms QR preview and wait until it is closed.</dd></div></dl><h2>Returns</h2><p>PNG FileInfo object; terminal rendering is written to the host when selected.</p><div class="note"><strong>Note</strong><p>Every invocation writes the PNG. -Terminal and -Window can be combined. The QR has a four-module quiet zone and an opaque white background.</p></div></article>
+
+    </main>
+    <footer><span>Windows 11 · PowerShell 7+ · Independent scripts</span><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts">Source on GitHub ↗</a></footer>
+  </div>
+</body>
+</html>

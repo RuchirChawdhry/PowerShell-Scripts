@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Read battery percentages reported by connected Bluetooth accessories.">
+  <link rel="canonical" href="https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-bluetoothbattery.html">
+  <link rel="sitemap" type="application/xml" href="https://ruchirchawdhry.github.io/PowerShell-Scripts/sitemap.xml">
+  <link rel="stylesheet" href="../styles.css">
+  <title>Get-BluetoothBattery · PowerShell Scripts</title>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="../"><span class="terminal-icon">PS<span class="cursor">_</span></span> PowerShell Scripts</a>
+      <nav aria-label="Main"><a href="../">Overview</a><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts/wiki">Wiki</a><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts">GitHub</a></nav>
+    </header>
+    <main id="content">
+      <div class="crumb"><a href="../">← All scripts</a><span>/ DEVICES</span></div>
+      <section class="detail-hero"><span class="eyebrow">DEVICES / COMMAND REFERENCE</span><h1>Get-BluetoothBattery</h1><p>Lists Bluetooth PnP devices that expose Windows' battery percentage property, with cleaned friendly names and instance IDs.</p><a class="source-link" href="https://github.com/RuchirChawdhry/PowerShell-Scripts/blob/main/Get-BluetoothBattery.ps1">View Get-BluetoothBattery.ps1 on GitHub ↗</a></section>
+      <article class="reference"><h2>Usage</h2><pre><code>Get-BluetoothBattery -Name 'Sony'</code></pre><h2>Parameters</h2><dl class="parameters"><div><dt><code>-Name</code></dt><dd>Optional substring to filter accessory names; defaults to all Bluetooth devices.</dd></div></dl><h2>Returns</h2><p>Name, BatteryPercent, InstanceId.</p><div class="note"><strong>Note</strong><p>The accessory must report a battery value to Windows; absent reports produce no row.</p></div></article>
+
+    </main>
+    <footer><span>Windows 11 · PowerShell 7+ · Independent scripts</span><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts">Source on GitHub ↗</a></footer>
+  </div>
+</body>
+</html>

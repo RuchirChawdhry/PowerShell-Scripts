@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Open an app's real taskbar Jump List and capture the popup.">
+  <link rel="canonical" href="https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-screenshotjumplist.html">
+  <link rel="sitemap" type="application/xml" href="https://ruchirchawdhry.github.io/PowerShell-Scripts/sitemap.xml">
+  <link rel="stylesheet" href="../styles.css">
+  <title>Get-ScreenshotJumplist · PowerShell Scripts</title>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="../"><span class="terminal-icon">PS<span class="cursor">_</span></span> PowerShell Scripts</a>
+      <nav aria-label="Main"><a href="../">Overview</a><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts/wiki">Wiki</a><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts">GitHub</a></nav>
+    </header>
+    <main id="content">
+      <div class="crumb"><a href="../">← All scripts</a><span>/ CAPTURE</span></div>
+      <section class="detail-hero"><span class="eyebrow">CAPTURE / COMMAND REFERENCE</span><h1>Get-ScreenshotJumplist</h1><p>Uses WinApp to inspect the taskbar, right-click the app button, then screenshot the actual Shell Jump List HWND.</p><a class="source-link" href="https://github.com/RuchirChawdhry/PowerShell-Scripts/blob/main/Get-ScreenshotJumplist.ps1">View Get-ScreenshotJumplist.ps1 on GitHub ↗</a></section>
+      <article class="reference"><h2>Usage</h2><pre><code>Get-ScreenshotJumplist -Name 'notepad' -Path .\jumplist.png</code></pre><h2>Parameters</h2><dl class="parameters"><div><dt><code>-Name</code></dt><dd>Fuzzy name of a running app with a taskbar button.</dd></div><div><dt><code>-ProcessId</code></dt><dd>Exact PID, alternative to -Name.</dd></div><div><dt><code>-Path</code></dt><dd>PNG output path, defaults to jumplist.png.</dd></div></dl><h2>Returns</h2><p>PNG FileInfo object.</p><div class="note"><strong>Note</strong><p>Requires Microsoft WinApp CLI and an unlocked interactive desktop. The app must be running with a taskbar button.</p></div></article>
+
+    </main>
+    <footer><span>Windows 11 · PowerShell 7+ · Independent scripts</span><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts">Source on GitHub ↗</a></footer>
+  </div>
+</body>
+</html>

@@ -31,6 +31,9 @@ jobs:
         run: |
           python -m pip install zxing-cpp pillow
           python -c "import zxingcpp; from PIL import Image; assert zxingcpp.read_barcode(Image.open('tests/qr-ci.png')).text == 'AarPaar QR test'"
+      - name: Verify Wiki, Pages and sitemap
+        shell: pwsh
+        run: ./tests/Test-Docs.ps1
       - name: Capture native taskbar Jump List
         shell: pwsh
         run: ./tests/Test-JumpList.ps1
