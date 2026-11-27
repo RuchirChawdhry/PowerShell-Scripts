@@ -135,18 +135,25 @@ public static class QRWindowTestNative {
     public static extern bool PostMessage(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
 }
 '@
-$qrStdout = Join-Path $directory 'qr-host.log'
-$qrStderr = Join-Path $directory 'qr-host-error.log'
-$qrHost = Start-Process -FilePath (Get-Command pwsh).Source -ArgumentList '-NoProfile', '-STA', '-File', "`"$PSScriptRoot/QR-WindowHost.ps1`"" -PassThru -RedirectStandardOutput $qrStdout -RedirectStandardError $qrStderr
-for ($attempt = 0; $attempt -lt 45; $attempt++) {
+$qrRunspace = [runspacefactory]::CreateRunspace()
+$qrRunspace.ApartmentState = [System.Threading.ApartmentState]::STA
+$qrRunspace.Open()
+$qrPowerShell = [powershell]::Create()
+$qrPowerShell.Runspace = $qrRunspace
+[void]$qrPowerShell.AddScript(". '$root/Get-QR.ps1'; Get-QR -Text 'QR window CI test' -Path '$PSScriptRoot/qr-window.png' -Width 256 -Window")
+$qrAsync = $qrPowerShell.BeginInvoke()
+for ($attempt = 0; $attempt -lt 30; $attempt++) {
     $qrWindow = [QRWindowTestNative]::FindWindow($null, 'QR: QR window CI test')
-    if ($qrWindow -ne [IntPtr]::Zero -or $qrHost.HasExited) { break }
+    if ($qrWindow -ne [IntPtr]::Zero -or $qrAsync.IsCompleted) { break }
     Start-Sleep -Seconds 1
 }
-Assert ($qrWindow -ne [IntPtr]::Zero) "QR preview window did not open. Host exit: $($qrHost.HasExited). Errors: $(Get-Content $qrStderr -Raw)"
+Assert ($qrWindow -ne [IntPtr]::Zero) "QR preview window did not open. Runspace errors: $($qrPowerShell.Streams.Error)"
 [void][QRWindowTestNative]::PostMessage($qrWindow, 0x0010, [IntPtr]::Zero, [IntPtr]::Zero)
-Assert ($qrHost.WaitForExit(20000)) 'QR preview window did not close'
-Assert ($qrHost.ExitCode -eq 0) 'QR preview process failed'
+Assert ($qrAsync.AsyncWaitHandle.WaitOne(20000)) 'QR preview window did not close'
+[void]$qrPowerShell.EndInvoke($qrAsync)
+Assert (-not $qrPowerShell.HadErrors) 'QR preview runspace failed'
+$qrPowerShell.Dispose()
+$qrRunspace.Dispose()
 Assert (Test-Path (Join-Path $PSScriptRoot 'qr-window.png')) 'QR preview PNG is missing'
 
 Add-Type -AssemblyName System.Windows.Forms
