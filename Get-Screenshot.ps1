@@ -1,5 +1,4 @@
 . "$PSScriptRoot/Get-HWND.ps1"
-. "$PSScriptRoot/Private/ScreenCapture.ps1"
 
 function Get-Screenshot {
     [CmdletBinding(DefaultParameterSetName = 'Name')]
@@ -22,20 +21,7 @@ function Get-Screenshot {
         Hwnd      { $Hwnd }
     }
 
-    [void][PowerShellScriptsNative]::SetForegroundWindow($window)
-    Start-Sleep -Milliseconds 250
-
-    $bounds = [PowerShellScriptsNative+RECT]::new()
-    [void][PowerShellScriptsNative]::DwmGetWindowAttribute(
-        $window, 9, [ref]$bounds, [Runtime.InteropServices.Marshal]::SizeOf($bounds)
-    )
-
-    $rectangle = [System.Drawing.Rectangle]::FromLTRB(
-        $bounds.Left, $bounds.Top, $bounds.Right, $bounds.Bottom
-    )
     $Path = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path)
-    $bitmap = New-ScreenBitmap -Bounds $rectangle
-    $bitmap.Save($Path, [System.Drawing.Imaging.ImageFormat]::Png)
-    $bitmap.Dispose()
+    winapp ui screenshot -w $window --capture-screen --output $Path --json | Out-Null
     Get-Item -LiteralPath $Path
 }

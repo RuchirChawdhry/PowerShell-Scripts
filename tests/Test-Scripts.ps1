@@ -17,7 +17,7 @@ Get-ChildItem $root -Filter *.ps1 -Recurse | ForEach-Object {
 
 @(
     'Get-BluetoothBattery.ps1', 'Get-BatteryInfo.ps1', 'Get-QR.ps1',
-    'Get-HWND.ps1', 'Get-ProcesID.ps1', 'Get-Screenshot.ps1',
+    'Get-HWND.ps1', 'Get-ProcesID.ps1', 'Get-HWInfo.ps1', 'Get-Screenshot.ps1',
     'Get-ScreenshotJumplist.ps1'
 ) | ForEach-Object { . (Join-Path $root $_) }
 
@@ -67,7 +67,11 @@ Remove-Item Function:Get-PnpDevice
 Remove-Item Function:Get-PnpDeviceProperty
 
 function Get-CimInstance {
-    param([string]$Namespace, [string]$ClassName)
+    param(
+        [Parameter(Position = 0)][string]$ClassName,
+        [string]$Namespace,
+        [string]$Filter
+    )
     switch ($ClassName) {
         BatteryStaticData {
             [pscustomobject]@{ InstanceName = 'BAT0'; DeviceName = 'Demo Battery'; ManufactureName = 'Demo'; SerialNumber = '123'; DesignedCapacity = 60000 }
@@ -78,6 +82,18 @@ function Get-CimInstance {
         BatteryStatus {
             [pscustomobject]@{ InstanceName = 'BAT0'; RemainingCapacity = 24000; Voltage = 11500; Charging = $false; Discharging = $true; PowerOnline = $false }
         }
+        Win32_Processor {
+            [pscustomobject]@{ Name = 'Demo CPU'; NumberOfCores = 8; NumberOfLogicalProcessors = 16; MaxClockSpeed = 4400 }
+        }
+        Win32_PhysicalMemory {
+            [pscustomobject]@{ BankLabel = 'DIMM0'; Manufacturer = 'Demo'; PartNumber = 'DDR5'; Capacity = 17179869184; Speed = 5600 }
+        }
+        Win32_DiskDrive {
+            [pscustomobject]@{ Model = 'Demo SSD'; Size = 512110190592; MediaType = 'Fixed hard disk media' }
+        }
+        WmiMonitorID {
+            [pscustomobject]@{ InstanceName = 'DISPLAY\\DEMO'; UserFriendlyName = @(68, 101, 109, 111, 32, 80, 97, 110, 101, 108, 0); ManufacturerName = @(68, 69, 77, 0) }
+        }
     }
 }
 
@@ -85,7 +101,13 @@ $battery = Get-BatteryInfo
 Assert ($battery.HealthPercent -eq 80) 'Battery health calculation failed'
 Assert ($battery.ChargePercent -eq 50) 'Battery charge calculation failed'
 Assert ($battery.Discharging -eq $true) 'Battery discharge status failed'
+$hardware = Get-HWInfo -Category CPU, RAM, Disk, Monitor
+Assert ($hardware.CPU.Name -eq 'Demo CPU') 'CPU information failed'
+Assert ($hardware.RAM.CapacityGB -eq 16) 'RAM capacity conversion failed'
+Assert ($hardware.Disk.SizeGB -gt 470) 'Disk capacity conversion failed'
+Assert ($hardware.Monitor.Name -eq 'Demo Panel') 'Monitor name decoding failed'
 Remove-Item Function:Get-CimInstance
+Assert ((Get-HWInfo -Category CPU).CPU.Name) 'Real processor inventory failed'
 
 $directory = Join-Path ([System.IO.Path]::GetTempPath()) ("powershell-scripts-" + [guid]::NewGuid())
 [void](New-Item -ItemType Directory -Path $directory)
@@ -93,6 +115,7 @@ $path = Join-Path $directory 'qr.png'
 $qr = Get-QR -Text 'AarPaar QR test' -Path $path -Width 256
 $bytes = [System.IO.File]::ReadAllBytes($qr.FullName)
 Assert ((($bytes[0..7] -join ',') -eq '137,80,78,71,13,10,26,10')) 'QR output is not PNG'
+Add-Type -AssemblyName System.Drawing
 $image = [System.Drawing.Image]::FromFile($qr.FullName)
 Assert ($image.Width -ge 10 -and $image.Height -ge 10) 'QR image is empty'
 $image.Dispose()
@@ -110,6 +133,13 @@ $form.Show()
 $screenshot = Get-Screenshot -Hwnd $form.Handle -Path (Join-Path $directory 'window.png')
 $capture = [System.Drawing.Bitmap]::new($screenshot.FullName)
 Assert ($capture.Width -ge 200 -and $capture.Height -ge 150) 'Window screenshot has incorrect dimensions'
+$corners = @(
+    $capture.GetPixel(0, 0).A
+    $capture.GetPixel($capture.Width - 1, 0).A
+    $capture.GetPixel(0, $capture.Height - 1).A
+    $capture.GetPixel($capture.Width - 1, $capture.Height - 1).A
+)
+Assert (($corners | Measure-Object -Minimum).Minimum -eq 255) 'Screenshot has transparent borders'
 $capture.Dispose()
 $form.Close()
 $form.Dispose()
@@ -118,7 +148,6 @@ Remove-Item $directory -Recurse -Force
 Assert ((Get-Command Get-Screenshot).ParameterSets.Name -contains 'Hwnd') 'Screenshot HWND parameter set missing'
 Assert ((Get-Command Get-Screenshot).ParameterSets.Name -contains 'ProcessId') 'Screenshot PID parameter set missing'
 Assert ((Get-Command Get-ScreenshotJumplist).ParameterSets.Name -contains 'Name') 'Jump-list name parameter set missing'
-Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes, System.Windows.Forms
-Assert ($null -ne [Windows.Automation.AutomationElement]::RootElement) 'Windows UI Automation unavailable'
+Assert ((Get-Command Get-HWInfo).Name -eq 'Get-HWInfo') 'Hardware inventory command missing'
 
 Write-Host 'All CI tests passed.'
