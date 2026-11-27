@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Independent Windows 11 PowerShell 7+ scripts for QR codes, screenshots, battery and hardware information.">
+  <link rel="canonical" href="https://ruchirchawdhry.github.io/PowerShell-Scripts/">
+  <link rel="sitemap" type="application/xml" href="https://ruchirchawdhry.github.io/PowerShell-Scripts/sitemap.xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>Overview · PowerShell Scripts</title>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="./"><span class="terminal-icon">PS<span class="cursor">_</span></span> PowerShell Scripts</a>
+      <nav aria-label="Main"><a href="./">Overview</a><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts/wiki">Wiki</a><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts">GitHub</a></nav>
+    </header>
+    <main id="content">
+      <section class="hero">
+        <span class="eyebrow">WINDOWS UTILITIES / 8 SCRIPTS</span>
+        <h1>Make Windows do <em>more.</em><br>One script at a time.</h1>
+        <p>Small, independent PowerShell commands for hardware, batteries, process lookup, QR codes, and pixel-perfect desktop screenshots. Built for Windows 11 and PowerShell 7+.</p>
+        <div class="hero-actions"><a class="primary" href="#scripts">Explore commands ↘</a><a class="secondary" href="https://github.com/RuchirChawdhry/PowerShell-Scripts">View repository ↗</a></div>
+      </section>
+      <section class="quickstart" aria-labelledby="start-title"><div><span class="eyebrow">QUICK START</span><h2 id="start-title">Dot-source any one script.</h2><p>No module setup, shared helper files, or framework required.</p></div><pre><code>. .\Get-QR.ps1
+Get-QR 'Hello Windows' -Terminal -Window
+
+. .\Get-HWInfo.ps1
+(Get-HWInfo -Category CPU, RAM).CPU</code></pre></section>
+      <section id="scripts" aria-labelledby="scripts-title"><div class="section-head"><span class="eyebrow">REFERENCE</span><h2 id="scripts-title">The commands</h2><p>Everything documented, one file per utility.</p></div><div class="script-grid">
+      <a class="script-card" href="scripts/get-bluetoothbattery.html"><span class="eyebrow">DEVICES</span><h3>Get-BluetoothBattery <span aria-hidden="true">↗</span></h3><p>Read battery percentages reported by connected Bluetooth accessories.</p></a>
+      <a class="script-card" href="scripts/get-batteryinfo.html"><span class="eyebrow">POWER</span><h3>Get-BatteryInfo <span aria-hidden="true">↗</span></h3><p>Inspect designed capacity, full-charge capacity, remaining charge, and health.</p></a>
+      <a class="script-card" href="scripts/get-qr.html"><span class="eyebrow">GRAPHICS</span><h3>Get-QR <span aria-hidden="true">↗</span></h3><p>Turn UTF-8 text into a PNG, a terminal QR, and a window preview.</p></a>
+      <a class="script-card" href="scripts/get-hwnd.html"><span class="eyebrow">WINDOWS</span><h3>Get-HWND <span aria-hidden="true">↗</span></h3><p>Find HWNDs by fuzzy process name, window title, or exact PID.</p></a>
+      <a class="script-card" href="scripts/get-procesid.html"><span class="eyebrow">PROCESSES</span><h3>Get-ProcesID <span aria-hidden="true">↗</span></h3><p>Locate process IDs with the same fuzzy search as HWND lookup.</p></a>
+      <a class="script-card" href="scripts/get-hwinfo.html"><span class="eyebrow">HARDWARE</span><h3>Get-HWInfo <span aria-hidden="true">↗</span></h3><p>Retrieve Windows hardware sections through CIM/WMI.</p></a>
+      <a class="script-card" href="scripts/get-screenshot.html"><span class="eyebrow">CAPTURE</span><h3>Get-Screenshot <span aria-hidden="true">↗</span></h3><p>Capture an exact visible HWND rectangle as an opaque PNG.</p></a>
+      <a class="script-card" href="scripts/get-screenshotjumplist.html"><span class="eyebrow">CAPTURE</span><h3>Get-ScreenshotJumplist <span aria-hidden="true">↗</span></h3><p>Open an app's real taskbar Jump List and capture the popup.</p></a>
+      </div></section>
+      <section class="requirements" aria-labelledby="req-title"><span class="eyebrow">REQUIREMENTS</span><h2 id="req-title">Lightweight by design.</h2><ul><li><strong>Windows 11</strong> and <strong>PowerShell 7+</strong> for all commands.</li><li><strong>Get-QR</strong> is pure PowerShell/.NET; it needs no PowerShell Gallery modules.</li><li><strong>Screenshots</strong> use <a href="https://github.com/microsoft/winappcli">Microsoft WinApp CLI</a>, installable with <code>winget install Microsoft.winappcli --source winget</code>, on an unlocked interactive desktop.</li><li>Battery and hardware queries rely on Windows-provided properties and WMI/CIM.</li></ul></section>
+
+    </main>
+    <footer><span>Windows 11 · PowerShell 7+ · Independent scripts</span><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts">Source on GitHub ↗</a></footer>
+  </div>
+</body>
+</html>

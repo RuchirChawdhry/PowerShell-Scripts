@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://ruchirchawdhry.github.io/PowerShell-Scripts/</loc></url>
+  <url><loc>https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-bluetoothbattery.html</loc></url>
+  <url><loc>https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-batteryinfo.html</loc></url>
+  <url><loc>https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-qr.html</loc></url>
+  <url><loc>https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-hwnd.html</loc></url>
+  <url><loc>https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-procesid.html</loc></url>
+  <url><loc>https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-hwinfo.html</loc></url>
+  <url><loc>https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-screenshot.html</loc></url>
+  <url><loc>https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-screenshotjumplist.html</loc></url>
+</urlset>

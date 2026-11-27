@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ruchirchawdhry.github.io/PowerShell-Scripts/sitemap.xml

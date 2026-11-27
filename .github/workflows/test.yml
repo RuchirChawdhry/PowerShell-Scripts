@@ -23,12 +23,21 @@ jobs:
         uses: microsoft/setup-WinAppCli@9288bd0729bd3f71e2ed1b9eb247dc91470b824e # v0.3
         with:
           version: v0.8.0
-      - name: Install offline QR generator
-        shell: pwsh
-        run: Install-Module QRCodeGenerator -RequiredVersion 2.4.0 -Scope CurrentUser -Force
       - name: Parse and test scripts
         shell: pwsh
         run: ./tests/Test-Scripts.ps1
+      - name: Decode generated QR using independent test scanner
+        shell: pwsh
+        run: |
+          python -m pip install zxing-cpp pillow
+          python -c "import zxingcpp; from PIL import Image; assert zxingcpp.read_barcode(Image.open('tests/qr-ci.png')).text == 'AarPaar QR test'"
+      - name: Verify Wiki, Pages and sitemap
+        shell: pwsh
+        run: ./tests/Test-Docs.ps1
+      - name: Exercise QR preview window
+        shell: pwsh
+        timeout-minutes: 3
+        run: ./tests/Test-QRWindow.ps1
       - name: Capture native taskbar Jump List
         shell: pwsh
         run: ./tests/Test-JumpList.ps1

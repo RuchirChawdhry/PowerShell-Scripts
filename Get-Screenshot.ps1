@@ -1,5 +1,3 @@
-. "$PSScriptRoot/Get-HWND.ps1"
-
 function Get-Screenshot {
     [CmdletBinding(DefaultParameterSetName = 'Name')]
     param(
@@ -16,8 +14,17 @@ function Get-Screenshot {
     )
 
     $window = switch ($PSCmdlet.ParameterSetName) {
-        Name      { Get-HWND -Name $Name | Select-Object -First 1 }
-        ProcessId { Get-HWND -ProcessId $ProcessId | Select-Object -First 1 }
+        Name      {
+            $pattern = ($Name.ToCharArray() | ForEach-Object { [regex]::Escape([string]$_) }) -join '.*'
+            Get-Process |
+                Where-Object { $_.ProcessName -match $pattern -or $_.MainWindowTitle -match $pattern } |
+                Sort-Object @{ Expression = {
+                    [int]($_.ProcessName -notlike "$Name*") + [int]($_.ProcessName -notlike "*$Name*")
+                } }, ProcessName, Id |
+                Where-Object MainWindowHandle -NE 0 |
+                Select-Object -First 1 -ExpandProperty MainWindowHandle
+        }
+        ProcessId { (Get-Process -Id $ProcessId).MainWindowHandle }
         Hwnd      { $Hwnd }
     }
 

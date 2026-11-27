@@ -1,5 +1,3 @@
-. "$PSScriptRoot/Private/Find-Process.ps1"
-
 function Get-HWND {
     [CmdletBinding(DefaultParameterSetName = 'Name')]
     param(
@@ -11,7 +9,14 @@ function Get-HWND {
     )
 
     $processes = switch ($PSCmdlet.ParameterSetName) {
-        Name      { Find-ProcessFuzzy -Name $Name }
+        Name      {
+            $pattern = ($Name.ToCharArray() | ForEach-Object { [regex]::Escape([string]$_) }) -join '.*'
+            Get-Process |
+                Where-Object { $_.ProcessName -match $pattern -or $_.MainWindowTitle -match $pattern } |
+                Sort-Object @{ Expression = {
+                    [int]($_.ProcessName -notlike "$Name*") + [int]($_.ProcessName -notlike "*$Name*")
+                } }, ProcessName, Id
+        }
         ProcessId { Get-Process -Id $ProcessId }
     }
 

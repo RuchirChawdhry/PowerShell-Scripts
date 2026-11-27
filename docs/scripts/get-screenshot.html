@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Capture an exact visible HWND rectangle as an opaque PNG.">
+  <link rel="canonical" href="https://ruchirchawdhry.github.io/PowerShell-Scripts/scripts/get-screenshot.html">
+  <link rel="sitemap" type="application/xml" href="https://ruchirchawdhry.github.io/PowerShell-Scripts/sitemap.xml">
+  <link rel="stylesheet" href="../styles.css">
+  <title>Get-Screenshot · PowerShell Scripts</title>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="../"><span class="terminal-icon">PS<span class="cursor">_</span></span> PowerShell Scripts</a>
+      <nav aria-label="Main"><a href="../">Overview</a><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts/wiki">Wiki</a><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts">GitHub</a></nav>
+    </header>
+    <main id="content">
+      <div class="crumb"><a href="../">← All scripts</a><span>/ CAPTURE</span></div>
+      <section class="detail-hero"><span class="eyebrow">CAPTURE / COMMAND REFERENCE</span><h1>Get-Screenshot</h1><p>Invokes Microsoft's WinApp CLI screen capture on the chosen foreground window, avoiding transparent edges.</p><a class="source-link" href="https://github.com/RuchirChawdhry/PowerShell-Scripts/blob/main/Get-Screenshot.ps1">View Get-Screenshot.ps1 on GitHub ↗</a></section>
+      <article class="reference"><h2>Usage</h2><pre><code>Get-Screenshot -Name 'notepad' -Path .\notepad.png
+Get-Screenshot -Hwnd (Get-HWND -Name 'npad' | Select-Object -First 1)</code></pre><h2>Parameters</h2><dl class="parameters"><div><dt><code>-Name</code></dt><dd>Fuzzy app/process name or title.</dd></div><div><dt><code>-ProcessId</code></dt><dd>Exact PID.</dd></div><div><dt><code>-Hwnd</code></dt><dd>Exact HWND IntPtr.</dd></div><div><dt><code>-Path</code></dt><dd>PNG output path, defaults to screenshot.png.</dd></div></dl><h2>Returns</h2><p>PNG FileInfo object.</p><div class="note"><strong>Note</strong><p>Requires Microsoft WinApp CLI and a running interactive Windows desktop. Captures visible content, including overlays.</p></div></article>
+
+    </main>
+    <footer><span>Windows 11 · PowerShell 7+ · Independent scripts</span><a href="https://github.com/RuchirChawdhry/PowerShell-Scripts">Source on GitHub ↗</a></footer>
+  </div>
+</body>
+</html>
